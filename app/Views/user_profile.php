@@ -1,153 +1,220 @@
-<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Upload</title>
 
-<div class="container py-4">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
 
-    <h2 class="mb-4 text-center">User Profiles</h2>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">Profile Upload & Pagination</h2>
+
+    <?php if(session()->getFlashdata('success')): ?>
+        <div class="alert alert-success">
+            <?= session()->getFlashdata('success') ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if(session()->getFlashdata('errors')): ?>
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+
+                <?php foreach(session()->getFlashdata('errors') as $error): ?>
+
+                    <li><?= esc($error) ?></li>
+
+                <?php endforeach; ?>
+
+            </ul>
+        </div>
+    <?php endif; ?>
 
     <div class="row">
 
-        <!-- FORM -->
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4">
 
-            <h5 class="mb-3">Add User</h5>
+            <div class="card shadow-sm p-4">
 
-            <form action="<?= base_url('users/upload') ?>"
-                  method="post"
-                  enctype="multipart/form-data">
+                <h4>Create Profile</h4>
 
-                <?= csrf_field() ?>
+                <hr>
 
-                <div class="mb-3">
-                    <input type="text"
-                           name="name"
-                           class="form-control"
-                           placeholder="Name"
-                           required>
-                </div>
+                <form action="<?= base_url('users/upload') ?>"
+                      method="post"
+                      enctype="multipart/form-data">
 
-                <div class="mb-3">
-                    <input type="email"
-                           name="email"
-                           class="form-control"
-                           placeholder="Email"
-                           required>
-                </div>
+                    <?= csrf_field() ?>
 
-                <div class="mb-3">
-                    <input type="file"
-                           name="avatar"
-                           class="form-control"
-                           required>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
 
-                <button type="submit"
-                        class="btn btn-primary w-100">
-                    Save
-                </button>
+                        <input type="text"
+                               name="name"
+                               class="form-control"
+                               value="<?= old('name') ?>"
+                               required>
+                    </div>
 
-            </form>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
 
-        </div>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               value="<?= old('email') ?>"
+                               required>
+                    </div>
 
-        <!-- USERS -->
-        <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label">Avatar</label>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <h5 class="mb-0">Users</h5>
-
-                <form method="get" class="d-flex gap-2">
-
-                    <input type="text"
-                           name="search"
-                           class="form-control form-control-sm"
-                           placeholder="Search">
+                        <input type="file"
+                               name="avatar"
+                               class="form-control"
+                               required>
+                    </div>
 
                     <button type="submit"
-                            class="btn btn-outline-secondary btn-sm">
-                        Search
+                            class="btn btn-primary w-100">
+
+                        Submit Profile
+
                     </button>
 
                 </form>
 
             </div>
+        </div>
 
-            <table class="table table-bordered align-middle">
+        <div class="col-md-8">
 
-                <thead>
-                    <tr>
-                        <th width="80">Avatar</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th width="100" class="text-center">Action</th>
-                    </tr>
-                </thead>
+            <div class="card shadow-sm p-4">
 
-                <tbody>
+                <div class="d-flex justify-content-between align-items-center mb-3">
 
-                    <?php if(!empty($users)): ?>
+                    <h4>User Directory</h4>
 
-                        <?php foreach($users as $user): ?>
+                    <form action="<?= base_url('users') ?>"
+                          method="get"
+                          class="d-flex gap-2">
 
-                            <tr>
+                        <input type="text"
+                               name="search"
+                               class="form-control form-control-sm"
+                               placeholder="Search users..."
+                               value="<?= esc($search ?? '') ?>">
 
-                                <td>
+                        <button type="submit"
+                                class="btn btn-sm btn-secondary">
 
-                                    <?php if(!empty($user['avatar'])): ?>
+                            Search
 
-                                        <img src="<?= base_url($user['avatar']) ?>"
-                                             width="50"
-                                             height="50"
-                                             class="rounded-circle">
+                        </button>
 
-                                    <?php else: ?>
+                    </form>
+                </div>
 
-                                        No Image
+                <table class="table table-striped table-hover align-middle">
 
-                                    <?php endif; ?>
+    <thead class="table-dark">
 
-                                </td>
+        <tr>
 
-                                <td>
-                                    <?= esc($user['name']) ?>
-                                </td>
+            <th>Avatar</th>
 
-                                <td>
-                                    <?= esc($user['email']) ?>
-                                </td>
+            <th>Name</th>
 
-                                <td class="text-center">
+            <th>Email</th>
 
-                                    <a href="<?= base_url('users/delete/' . $user['id']) ?>"
-                                       class="btn btn-danger btn-sm"
-                                       onclick="return confirm('Delete this user?')">
+            <th>Action</th>
 
-                                        Delete
+        </tr>
 
-                                    </a>
+    </thead>
 
-                                </td>
+    <tbody>
 
-                            </tr>
+    <?php if(!empty($users)): ?>
 
-                        <?php endforeach; ?>
+        <?php foreach($users as $user): ?>
+
+            <tr>
+
+                <td>
+
+                    <?php if(!empty($user['avatar'])): ?>
+
+                        <img src="<?= base_url($user['avatar']) ?>"
+                             class="rounded-circle"
+                             style="width:50px;height:50px;object-fit:cover;">
 
                     <?php else: ?>
 
-                        <tr>
-                            <td colspan="4" class="text-center">
-                                No users found.
-                            </td>
-                        </tr>
+                        No Image
 
                     <?php endif; ?>
 
-                </tbody>
+                </td>
 
-            </table>
+                <td>
 
-            <div class="d-flex justify-content-center">
-                <?= $pager->links() ?>
+                    <?= esc($user['name']) ?>
+
+                </td>
+
+                <!-- EMAIL -->
+                <td>
+
+                    <?= esc($user['email']) ?>
+
+                </td>
+
+                <td>
+
+                    <a href="<?= base_url('users/delete/' . $user['id']) ?>"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete this user?')">
+
+                        Delete
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        <?php endforeach; ?>
+
+    <?php else: ?>
+
+        <tr>
+
+            <td colspan="4" class="text-center">
+
+                No users found.
+
+            </td>
+
+        </tr>
+
+    <?php endif; ?>
+
+    </tbody>
+
+</table>
+
+                <div class="mt-3">
+
+                    <?= $pager->links() ?>
+
+                </div>
+
             </div>
 
         </div>
@@ -157,3 +224,4 @@
 </div>
 
 </body>
+</html>
