@@ -15,14 +15,12 @@
 
     <h2 class="mb-4">Profile Upload & Pagination</h2>
 
-    <!-- Success Message -->
     <?php if(session()->getFlashdata('success')): ?>
         <div class="alert alert-success">
             <?= session()->getFlashdata('success') ?>
         </div>
     <?php endif; ?>
 
-    <!-- Error Messages -->
     <?php if(session()->getFlashdata('errors')): ?>
         <div class="alert alert-danger">
             <ul class="mb-0">
@@ -39,7 +37,6 @@
 
     <div class="row">
 
-        <!-- Upload Form -->
         <div class="col-md-4">
 
             <div class="card shadow-sm p-4">
@@ -54,7 +51,6 @@
 
                     <?= csrf_field() ?>
 
-                    <!-- Name -->
                     <div class="mb-3">
                         <label class="form-label">Name</label>
 
@@ -65,7 +61,6 @@
                                required>
                     </div>
 
-                    <!-- Email -->
                     <div class="mb-3">
                         <label class="form-label">Email</label>
 
@@ -76,7 +71,6 @@
                                required>
                     </div>
 
-                    <!-- Avatar -->
                     <div class="mb-3">
                         <label class="form-label">Avatar</label>
 
@@ -98,7 +92,6 @@
             </div>
         </div>
 
-        <!-- User Table -->
         <div class="col-md-8">
 
             <div class="card shadow-sm p-4">
@@ -107,7 +100,6 @@
 
                     <h4>User Directory</h4>
 
-                    <!-- Search -->
                     <form action="<?= base_url('users') ?>"
                           method="get"
                           class="d-flex gap-2">
@@ -128,7 +120,6 @@
                     </form>
                 </div>
 
-                <!-- Table -->
                 <table class="table table-striped table-hover align-middle">
 
     <thead class="table-dark">
@@ -155,7 +146,6 @@
 
             <tr>
 
-                <!-- AVATAR -->
                 <td>
 
                     <?php if(!empty($user['avatar'])): ?>
@@ -172,7 +162,6 @@
 
                 </td>
 
-                <!-- NAME -->
                 <td>
 
                     <?= esc($user['name']) ?>
@@ -186,7 +175,6 @@
 
                 </td>
 
-                <!-- DELETE BUTTON -->
                 <td>
 
                     <a href="<?= base_url('users/delete/' . $user['id']) ?>"
@@ -221,7 +209,6 @@
 
 </table>
 
-                <!-- Pagination -->
                 <div class="mt-3">
 
                     <?= $pager->links() ?>

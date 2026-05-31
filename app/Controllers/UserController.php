@@ -16,16 +16,12 @@ class UserController extends Controller
         helper(['form', 'url']);
     }
 
-    // =========================
-    // DISPLAY USERS
-    // =========================
     public function index()
     {
         $search = $this->request->getGet('search');
 
         $query = $this->userModel;
 
-        // Search Function
         if (!empty($search)) {
 
             $query = $query->like('name', $search)
@@ -43,10 +39,6 @@ class UserController extends Controller
 
         return view('user_profile', $data);
     }
-
-    // =========================
-    // UPLOAD USER
-    // =========================
     public function upload()
     {
         // Validation Rules
@@ -73,7 +65,6 @@ class UserController extends Controller
             'email' => 'required|valid_email|is_unique[users.email]'
         ];
 
-        // Validate Form
         if (!$this->validate($validationRule)) {
 
             return redirect()->back()
@@ -81,19 +72,14 @@ class UserController extends Controller
                 ->with('errors', $this->validator->getErrors());
         }
 
-        // Get Uploaded File
         $img = $this->request->getFile('avatar');
 
-        // Check Upload
         if ($img->isValid() && !$img->hasMoved()) {
 
-            // Generate Random File Name
             $newName = $img->getRandomName();
 
-            // Move File
             $img->move(ROOTPATH . 'public/uploads/', $newName);
 
-            // Save Data
             $userData = [
 
                 'name' => $this->request->getPost('name'),
@@ -103,7 +89,6 @@ class UserController extends Controller
                 'avatar' => 'uploads/' . $newName
             ];
 
-            // Insert Data
             $this->userModel->save($userData);
 
             return redirect()->to('/users')
@@ -114,22 +99,15 @@ class UserController extends Controller
             ->with('error', 'File upload failed.');
     }
 
-    // =========================
-    // DELETE USER
-    // =========================
     public function delete($id)
     {
-        // Find User
         $user = $this->userModel->find($id);
 
-        // Check If User Exists
         if (!$user) {
 
             return redirect()->to('/users')
                 ->with('error', 'User not found.');
         }
-
-        // Delete Avatar Image
         if (!empty($user['avatar'])) {
 
             $filePath = ROOTPATH . 'public/' . $user['avatar'];
@@ -140,7 +118,6 @@ class UserController extends Controller
             }
         }
 
-        // Delete User Record
         $this->userModel->delete($id);
 
         return redirect()->to('/users')
